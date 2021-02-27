@@ -21,9 +21,9 @@
                     @foreach($invoiceData as $driver)
                         <tr>
                             <th scope="row">{{$driver->name}}</th>
-                            <th scope="row">${{$driver->invoicesTotal}}</th>
-                            <th scope="row">${{$driver->fuel}}</th>
-                            <th scope="row">{{$driver->total}}</th>
+                            <th scope="row">${{number_format($driver->invoicesTotal,2)}}</th>
+                            <th scope="row">${{number_format($driver->fuel,2)}}</th>
+                            <th scope="row">${{$driver->total,2}}</th>
                         </tr>
                     @endforeach
                     </tbody>

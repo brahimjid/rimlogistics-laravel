@@ -22,17 +22,12 @@ class IftaImporte  implements ToCollection
 
 
                 if ($row>0){
-                   // dd($rows);
-                  // dump(State::getId($val[1])->id);
-                    //echo(substr($val[4],-2)) ." ";
+
                     DB::table('iftas')->insert(
                         [
-                            // driver_id	state_id	distance
-
-                            "driver_id"=>$val[0],
-                            "state_id"=>State::getId($val[1])->id,
-                            "distance"=>$val[2],
-
+                            "driver_id"=>$val[1],
+                            "state_id"=>State::getId($val[2])->id,
+                            "distance"=>$val[3],
 
                         ]);
                 }

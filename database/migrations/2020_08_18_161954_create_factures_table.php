@@ -19,6 +19,7 @@ class CreateFacturesTable extends Migration
             $table->decimal('amount');
             $table->integer('driver_id');
             $table->boolean("extra");
+            $table->dateTime("date");
             $table->timestamps();
         });
     }

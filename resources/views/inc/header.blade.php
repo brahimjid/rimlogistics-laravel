@@ -1,4 +1,4 @@
-<div class="row mt-5 justify-content-between align-items-center">
+<div class="row mt-5 justify-content-between align-items-center d-none d-print-block">
     <div class="clo-8">
 
 
@@ -21,6 +21,6 @@
 
     <div class="col-md-4 d-sm-flex align-content-between mt-1">
         <span class="font-weight-bold">Date: </span>
-        <span class="">{{\Carbon\Carbon::now()->toDateString()}}</span>
+        <span class="">{{\Carbon\Carbon::now()->format("m-d-yy")}}</span>
     </div>
 </div>

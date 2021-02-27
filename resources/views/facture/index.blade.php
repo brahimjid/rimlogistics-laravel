@@ -115,8 +115,7 @@
     </div>
 @endsection
 @section('js')
-    <script src="{{asset('js/moment.min.js')}}"></script>
-    <script src="{{asset('js/bootstrap-datetimepicker.min.js')}}"></script>
+
     <script>
         $(document).ready(function () {
             $('.submitBtn').click(function () {

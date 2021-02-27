@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use stdClass;
 
 class FacturesController extends Controller
 {
@@ -100,13 +101,13 @@ class FacturesController extends Controller
 
     public function update(Request $request)
     {
-        //  dd($request->all());
+         // dd($request->all());
         $facture = Facture::find($request->id);
         $facture->fact_num = $request->num;
         $facture->amount = $request->amount;
         $facture->driver_id = $request->driver_id;
         $facture->date = $request->date;
-        // $facture->extra=$request->extra;
+         $facture->extra=$request->extra;
         $facture->created_at = $request->date;
         $facture->updated_at = $request->date;
         if ($facture->save())
@@ -124,41 +125,80 @@ class FacturesController extends Controller
 
     }
 
-    public function weeklyPaycheck()
-    {
-        $sw = Carbon::now()->startOfWeek();
-        $ew = Carbon::now()->endOfWeek();
-        $rf = DB::select("
-              SELECT d.full_name ,SUM(f.amount) invoiceTotal FROM factures f,drivers d WHERE f.driver_id = d.id and f.date BETWEEN
-              '$sw' and '$ew' and f.extra =0 GROUP BY f.driver_id
-  UNION
-  SELECT d.full_name ,SUM(fe.fuel) fuelTotal FROM drivers d,fuels fe WHERE fe.driver_id = d.id  and fe.created_at BETWEEN
-     '$sw' and '$ew' GROUP BY fe.driver_id
+//    public function weeklyPaycheck()
+//    {
+//        $startOfWeek = Carbon::now()->startOfWeek();
+//        $endOfWeek = Carbon::now()->endOfWeek();
+//        $invoicesSum = DB::select(" SELECT d.full_name ,SUM(f.amount) invoiceTotal FROM factures f,drivers d WHERE f.driver_id = d.id and f.date BETWEEN
+//              '$startOfWeek' and '$endOfWeek' and f.extra =0 GROUP BY f.driver_id
+//              UNION
+//              SELECT d.full_name ,SUM(fe.fuel) fuelTotal FROM drivers d,fuels fe WHERE fe.driver_id = d.id  and fe.created_at BETWEEN
+//     '$startOfWeek' and '$endOfWeek' GROUP BY fe.driver_id");
+//
+//         //dd($invoicesSum);
+//        $gr = (collect($invoicesSum)->groupBy('full_name'));
+//
+//        $y = [];
+//
+//        foreach ($gr as $k => $v) {
+//
+//            $name = $v[0]->full_name;
+//            $it = isset($v[1])?$v[0]->invoiceTotal:0;
+//            $ft = isset($v[1]) ? $v[1]->invoiceTotal : $v[0]->invoiceTotal;
+//
+//
+//            $tf = number_format(($it - $ft) * (1 - 10.5 / 100), 2);
+//            array_push($y,
+//                [
+//                    'name' => $name,
+//                    'invoicesTotal' => $it,
+//                    'fuel' => $ft,
+//                    'total' => $tf
+//
+//                ]);
+//        }
+//
+//        return view('facture.weeklyPaycheck', ['invoiceData' => Facture::hydrate($y)]);
+//
+//    }
+
+  public function paycheck()
+  {
+      $startOfWeek = Carbon::now()->startOfWeek();
+
+      $endOfWeek = Carbon::now()->endOfWeek();
+      //dd($startOfWeek);
+//        $t = Facture::with(['driver'=>function($q) use ($startOfWeek,$endOfWeek){
+//             $q->with(['fuel'=>function($q) use($startOfWeek,$endOfWeek){
+//                 $q->whereDate('created_at','>=',$startOfWeek)->where('driver_id',3);
+//             }]);
+//      }])->whereBetween('date',[$startOfWeek,$endOfWeek])->where([['driver_id',3],['extra',0]])->get();
+//        return response()->json($t);
+
+      $invoicesAndFuels  = Driver::with(["facture"=>function ($q) use($startOfWeek,$endOfWeek){
+          $q->select('id',"date",'amount','driver_id')->whereBetween('date', [$startOfWeek, $endOfWeek])->where("extra",0);
+      }])->with(['fuel'=>function($q) use($startOfWeek,$endOfWeek){
+
+          $q->select('id','fuel','driver_id')->whereBetween('created_at', [$startOfWeek, $endOfWeek]);
+      }])->get(["id","full_name"]);
+
+      $groupedData = $invoicesAndFuels->mapToGroups(function ($item){
+              //dd($item->driver->fuel);
+          return [$item->full_name=>["invoices"=>count($item->facture)?$item->facture:[],
+                                    "fuels"=>count($item->fuel)>0?$item->fuel:[],
+                                    'sumInvoices'=>($item->facture->sum('amount')),
+                                    'sumFuels'=>$item->fuel->sum('fuel'),
+                                    ]];
+     });
+
+      if (request()->ajax()){
+          return response()->json($invoicesAndFuels);
+      }
+
+      return view('facture.wp',["data"=>$groupedData,'drivers'=>Driver::all()]);
 
 
-              ");
+//
+   }
 
-        $gr = (collect($rf)->groupBy('full_name'));
-        $y = [];
-        // dd($gr);
-        foreach ($gr as $k => $v) {
-            $name = $v[0]->full_name;
-            $it = $v[0]->invoiceTotal;
-            $ft = isset($v[1]) ? $v[1]->invoiceTotal : 0;
-
-
-            $tf = number_format(($it - $ft) * (1 - 10.5 / 100), 2);
-            array_push($y,
-                [
-                    'name' => $name,
-                    'invoicesTotal' => $it,
-                    'fuel' => $ft,
-                    'total' => $tf
-
-                ]);
-
-        }
-        return view('facture.weeklyPaycheck', ['invoiceData' => Facture::hydrate($y)]);
-
-    }
 }

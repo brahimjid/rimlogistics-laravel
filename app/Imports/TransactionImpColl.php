@@ -21,18 +21,17 @@ class TransactionImpColl implements ToCollection
 
 
     if ($row>0){
-          //dump($val[10]);
-      //  dd(State::getId(substr(trim($val[4],' '),-2))->id);
-         //echo(substr($val[4],-2)) ." ";
+
         DB::table('transactions')->insert(
             [
+
                   "state_id"=>State::getId(substr(trim($val[4],' '),-2))->id,
-                  "driver_id"=>$val[10],
+                  "driver_id"=>empty($val[10])?0:$val[10],
                   "quantity"=>$val[11],
                   "card_num"=>$val[0],
-
             ]);
     }
+
         }
 
     }

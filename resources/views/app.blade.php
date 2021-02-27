@@ -21,6 +21,8 @@
   <script type="text/javascript" src="{{asset('js/popper.min.js')}}"></script>
   <script type="text/javascript" src="{{asset('js/bootstrap.min.js')}}"></script>
   <script type="text/javascript" src="{{asset('js/mdb.min.js')}}"></script>
+<script src="{{asset('js/moment.min.js')}}"></script>
+<script src="{{asset('js/bootstrap-datetimepicker.min.js')}}"></script>
 @yield('js')
 </body>
 </html>

@@ -59,7 +59,7 @@
                             <div class="list-group mb-3" id="driversList">
                                 @foreach($drivers as $driver)
                                     <div class="list-group-item">
-                                        <span  class="font-weight-bold">{{$driver->full_name}}</span>
+                                        <span  class="font-weight-bold">{{$driver->full_name}}({{$driver->truck_number}})</span>
                                         <a class="btn btn-success btn-sm float-right text-decoration-none"
                                            href="{{route('iftas.download',$driver->truck_number)}}">
                                             Download

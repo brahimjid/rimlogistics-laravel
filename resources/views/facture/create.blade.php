@@ -33,7 +33,7 @@
                     <div class="col-md-6">
                         <!-- Material input -->
                         <div class="md-form form-group">
-                            <input type="number" class="form-control" required name="amount" id="inputPassword4MD">
+                            <input type="number"  step="0.01" min="0" class="form-control" required name="amount" id="inputPassword4MD">
                             <label for="inputPassword4MD">Amount</label>
                         </div>
                     </div>

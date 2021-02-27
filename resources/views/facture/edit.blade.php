@@ -63,6 +63,26 @@
                         </select>
                         <label for="driver">Driver</label>
                     </div>
+                    <div class="col-md-6">
+                        <!-- Material input -->
+                        <select name="extra" class="mdb-select md-form">
+                            <option value="{{$facture->extra}}" selected>
+                               @if($facture->extra)
+                                   Yes
+                                @else
+                                   No
+                                @endif
+                            </option>
+                            <option value="{{!$facture->extra}}">
+                                @if($facture->extra)
+                                    No
+                                @else
+                                    Yes
+                                @endif
+                            </option>
+                        </select>
+                        <label for="driver">extra</label>
+                    </div>
                     <!-- Grid column -->
                 </div>
                 <div>

@@ -16,7 +16,7 @@ class States extends Migration
         Schema::create('states', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->integer('code');
+            $table->string('code');
         });
     }
 

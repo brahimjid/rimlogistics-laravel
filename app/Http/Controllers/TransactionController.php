@@ -35,13 +35,15 @@ class TransactionController extends Controller
                               and t.driver_id = $id
                         GROUP by t.state_id ,t.card_num");
 
+
         $grouped =collect($data)->mapToGroups(function ($item) {
 
             return [$item->name => [$item->card_num, 'total' => $item->quantity_total]];
         });
 
-        $res = $grouped->toArray();
 
+        $res = $grouped->toArray();
+        // return response()->json($res);
         $driver_id = $data[0]->driver_id;
         // return view('download',compact('res','driver_id'));
         $pdf = PDF::loadView('download', compact('res', 'driver_id'));

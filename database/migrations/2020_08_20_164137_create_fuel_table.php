@@ -13,11 +13,10 @@ class CreateFuelTable extends Migration
      */
     public function up()
     {
-        Schema::create('fuel', function (Blueprint $table) {
+        Schema::create('fuels', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->decimal('fuel');
-            $table->unsignedBigInteger('driver_id');
-            $table->foreign('driver_id')->references('id')->on('drivers');
+            $table->integer('driver_id');
             $table->timestamps();
         });
     }
